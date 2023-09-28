@@ -7,30 +7,37 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-# jobs:
-#   create_release:
-#     name: Release
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Create Release
-#         uses: softprops/action-gh-release@v1
-#         with:
-#           tag_name: 123
-#           files: |
-#             .
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#
-
 jobs:
-  release:
+  create_release:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
 
-      - name: Create Release Pull Request
-        uses: changesets/action@v1
+      - name: Get Package Version
+        id: get_version
+        run: |
+          echo ::set-output name=VERSION::$(jq -r .version package.json)
+        shell: bash
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          files: |
+            .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+# jobs:
+#   release:
+#     name: Release
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Repo
+#         uses: actions/checkout@v3
+#
+#       - name: Create Release Pull Request
+#         uses: changesets/action@v1
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
