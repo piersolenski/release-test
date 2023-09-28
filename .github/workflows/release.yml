@@ -75,12 +75,12 @@ jobs:
 
   create_release:
     needs: tag_version
-    if: ${{ needs.tag_version.outputs.tagged == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ needs.tag_version.outputs.tag }}
-          draft: true
+          artifacts: "index.html"
+          # tag: ${{ needs.tag_version.outputs.tag }}
+          # draft: true
