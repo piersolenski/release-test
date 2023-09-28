@@ -43,22 +43,11 @@ jobs:
           echo ::set-output name=VERSION::$(jq -r .version package.json)
         shell: bash
 
-      # - name: ⚙️ Check tag exists
-      #   id: check_tag
-      #   uses: mukunku/tag-exists-action@v1.0.0
-      #   with:
-      #     tag: ${{ needs.build_and_push.outputs.tag }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 🔖 Tag version
-        id: tag
-        if: ${{ steps.check_tag.outputs.exists == 'false' }}
-        uses: anothrNick/github-tag-action@1.34.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_TAG: ${{ needs.build_and_push.outputs.tag }}
-
+      - name: Create Git Tag
+        run: |
+          git tag -a v${{ steps.get_version.outputs.VERSION }} -m "Version ${{ steps.get_version.outputs.VERSION }}"
+          git push origin v${{ steps.get_version.outputs.VERSION }}
+        shell: bash
       - name: ⚙️ Check created tag
         id: check_tagged
         run: |
