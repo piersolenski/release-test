@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   tag_version:
-    needs: build_and_push
+    needs: release
     runs-on: ubuntu-latest
     outputs:
       tagged: ${{ steps.check_tagged.outputs.tagged }}
