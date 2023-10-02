@@ -1,16 +1,19 @@
-name: Publish
+name: Release
+
 on:
   push:
     branches:
-      - 'main'
+      - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  publish:
+  release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
       - name: Setup Node.js 16
         uses: actions/setup-node@v3
@@ -18,13 +21,9 @@ jobs:
           node-version: 16
 
       - name: Install Dependencies
-        run: npm install
+        run: yarn
 
-      - name: Bundle
-        run: npm run bundle
-
-      - name: Create Release Pull Request or Publish
-        id: changesets
+      - name: Create Release Pull Request
         uses: changesets/action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
